@@ -10,17 +10,28 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity  //开启Spring Security Web安全配置
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {  //重写WebSecurityConfigurerAdapter中的方法，用于自定义Spring Security配置
 
-    @Autowired
-    private UserDetailsService customUserDetailsService;
+    //@Autowired
+    //private UserDetailsService customUserDetailsService;
+
+    // 直接使用 InMemoryUserDetailsManager
+    @Bean
+    public UserDetailsService customUserDetailsService(){
+        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+        inMemoryUserDetailsManager.createUser(User.withUsername("admin").password(passwordEncoder().encode("123456")).authorities("USER_ROLE").build());
+
+        return inMemoryUserDetailsManager;
+    }
 
     /**
      * Authentication认证配置
@@ -34,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {  //重写W
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(customUserDetailsService())
                 //.inMemoryAuthentication()
                 //    .withUser("admin")
                 //    .password(passwordEncoder().encode("123456"))

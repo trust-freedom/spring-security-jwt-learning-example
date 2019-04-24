@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * 如果使用authenticationManagerBuilder.inMemoryAuthentication()会导致过滤器链使用配置的内存认证，但没有交给Spring容器管理
  * 而@Autowired UserDetailsService 使用的是UserDetailsServiceAutoConfiguration配置的默认账号密码
  */
-@Service
+//@Service
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
